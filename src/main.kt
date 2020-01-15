@@ -1,7 +1,20 @@
 import java.io.File
+import kotlin.math.sqrt
+
+fun hitsSphere(ray: Ray, center: Vec3, radius: Double): Boolean {
+    val diff = ray.origin - center
+    val a = ray.direction.dot(ray.direction)
+    val b = 2.0 * ray.direction.dot(diff)
+    val c = diff.dot(diff) - radius * radius
+    val d = b * b - 4.0 * a * c
+    return d >= 0
+}
 
 fun color(ray: Ray): Vec3 {
     val unitDirection = ray.direction.makeUnitVector()
+    if (hitsSphere(ray, Vec3(0.0, 0.0, -1.0), 0.5)) {
+        return Vec3(1.0, 0.0, 0.0)
+    }
     val t = 0.5 * (unitDirection.y + 1)
     return (1.0 - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0)
 }
