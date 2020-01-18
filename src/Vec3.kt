@@ -63,6 +63,10 @@ data class Vec3(var x: Double, var y: Double, var z: Double) {
         return x * other.x + y * other.y + z * other.z
     }
 
+    fun cross(other: Vec3): Vec3 {
+        return Vec3(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x)
+    }
+
     fun length(): Double {
         return sqrt(squaredLength())
     }
