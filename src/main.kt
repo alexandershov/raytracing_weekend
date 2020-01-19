@@ -3,13 +3,26 @@ import kotlin.random.Random.Default.nextDouble
 
 
 fun color(ray: Ray, world: Hitable): Vec3 {
-    val unitDirection = ray.direction.makeUnitVector()
     val hit = world.hit(ray, 0.0, Double.MAX_VALUE)
     if (hit != null) {
-        return (hit.normal + Vec3(1.0, 1.0, 1.0)) * 0.5
+        val center = hit.point + hit.normal
+        val point = center + randomInUnitSphere()
+        return 0.5 * color(Ray(hit.point, point - hit.point), world)
     }
+    val unitDirection = ray.direction.makeUnitVector()
     val t = 0.5 * (unitDirection.y + 1)
     return (1.0 - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0)
+}
+
+fun randomInUnitSphere(): Vec3 {
+    while (true) {
+        val x = nextDouble() * 2 - 1
+        val y = nextDouble() * 2 - 1
+        val z = nextDouble() * 2 - 1
+        if (x * x + y * y + z * z < 1) {
+            return Vec3(x, y, z)
+        }
+    }
 }
 
 fun makeCamera(): Camera {
