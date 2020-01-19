@@ -10,7 +10,7 @@ data class Sphere(val center: Vec3, val radius: Double) : Hitable {
         if (d > 0.0) {
             for (sign in listOf(-1.0, 1.0)) {
                 val t = (-b + sign * sqrt(d)) / (2 * a)
-                if (t > min_t && t < max_t) {
+                if (t in min_t..max_t) {
                     val point = ray.pointAtParameter(t)
                     val normal = (point - center).makeUnitVector()
                     return Hit(t, point, normal)
