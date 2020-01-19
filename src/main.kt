@@ -4,7 +4,7 @@ import kotlin.random.Random.Default.nextDouble
 
 
 fun color(ray: Ray, world: Hitable): Vec3 {
-    val hit = world.hit(ray, 0.0, Double.MAX_VALUE)
+    val hit = world.hit(ray, 0.001, Double.MAX_VALUE)
     if (hit != null) {
         val center = hit.point + hit.normal
         val point = center + randomInUnitSphere()
