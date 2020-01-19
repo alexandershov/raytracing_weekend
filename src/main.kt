@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.math.sqrt
 import kotlin.random.Random.Default.nextDouble
 
 
@@ -51,9 +52,9 @@ fun main() {
                     col += color(ray, world)
                 }
                 col /= antiAliasing.toDouble()
-                val r = (col.r() * 255.99).toInt()
-                val g = (col.g() * 255.99).toInt()
-                val b = (col.b() * 255.99).toInt()
+                val r = (sqrt(col.r()) * 255.99).toInt()
+                val g = (sqrt(col.g()) * 255.99).toInt()
+                val b = (sqrt(col.b()) * 255.99).toInt()
                 out.print("$r $g $b\n")
             }
         }
