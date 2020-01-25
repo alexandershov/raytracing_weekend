@@ -37,7 +37,7 @@ fun refract(v: Vec3, n: Vec3, ni_over_nt: Double): Vec3? {
 }
 
 fun schlick(cosine: Double, refIdx: Double): Double {
-    val r0 = (1 - refIdx) / (1 + refIdx).pow(2)
+    val r0 = ((1 - refIdx) / (1 + refIdx)).pow(2)
     return r0 + (1 - r0) * (1 - cosine).pow(5)
 
 }
