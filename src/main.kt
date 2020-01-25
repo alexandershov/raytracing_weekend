@@ -41,7 +41,7 @@ data class Dielectric(val ri: Double): Material {
         val outward: Vec3
         val reflected = reflect(incident.direction, hit.normal)
         val niOverNt: Double
-        val attenuation = Vec3(1.0, 1.0, 0.0)
+        val attenuation = Vec3(1.0, 1.0, 1.0)
         if (incident.direction.dot(hit.normal) > 0) {
             outward = -hit.normal
             niOverNt = ri
@@ -119,9 +119,9 @@ fun main() {
 }
 
 private fun makeWorld(): Hitable {
-    val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3)))
-    val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.3)))
-    val firstMetal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.6, 0.2), 1.0))
+    val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.1, 0.2, 0.5)))
+    val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.0)))
+    val firstMetal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.0))
     val secondMetal = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Dielectric(1.5))
     return HitableList(listOf(smallSphere, largeSphere, firstMetal, secondMetal))
 }
