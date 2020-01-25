@@ -1,6 +1,6 @@
 import kotlin.math.sqrt
 
-data class Sphere(val center: Vec3, val radius: Double) : Hitable {
+data class Sphere(val center: Vec3, val radius: Double, val material: Material) : Hitable {
     override fun hit(ray: Ray, min_t: Double, max_t: Double): Hit? {
         val diff = ray.origin - center
         val a = ray.direction.dot(ray.direction)
@@ -13,7 +13,7 @@ data class Sphere(val center: Vec3, val radius: Double) : Hitable {
                 if (t in min_t..max_t) {
                     val point = ray.pointAtParameter(t)
                     val normal = (point - center).makeUnitVector()
-                    return Hit(t, point, normal)
+                    return Hit(t, point, normal, material)
                 }
             }
         }

@@ -3,12 +3,34 @@ import kotlin.math.sqrt
 import kotlin.random.Random.Default.nextDouble
 
 
-fun color(ray: Ray, world: Hitable): Vec3 {
-    val hit = world.hit(ray, 0.001, Double.MAX_VALUE)
-    if (hit != null) {
+data class Lambertian(val albedo: Vec3) : Material {
+    override fun scatter(incident: Ray, hit: Hit): Scatter? {
         val center = hit.point + hit.normal
         val point = center + randomInUnitSphere()
-        return 0.5 * color(Ray(hit.point, point - hit.point), world)
+        return Scatter(Ray(hit.point, point - hit.point), albedo)
+    }
+}
+
+data class Metal(val albedo: Vec3): Material {
+    override fun scatter(incident: Ray, hit: Hit): Scatter? {
+        val reflection = Ray(hit.point, reflect(incident.direction, hit.normal))
+        return Scatter(reflection, albedo)
+    }
+}
+
+fun reflect(v: Vec3, normal: Vec3): Vec3 {
+    return v - 2.0 * v.dot(normal) * normal
+}
+
+fun color(ray: Ray, world: Hitable, depth: Int): Vec3 {
+    val hit = world.hit(ray, 0.001, Double.MAX_VALUE)
+    if (hit != null) {
+        val scatter = hit.material.scatter(ray, hit)
+        if (depth < 50 && scatter != null) {
+            val col = color(scatter.ray, world, depth + 1)
+            return scatter.attenuation * col
+        }
+        return Vec3(0.0, 0.0, 0.0)
     }
     val unitDirection = ray.direction.makeUnitVector()
     val t = 0.5 * (unitDirection.y + 1)
@@ -49,7 +71,7 @@ fun main() {
                     val u = (i + nextDouble()) / nx
                     val v = (j + nextDouble()) / ny
                     val ray = camera.getRay(u, v)
-                    col += color(ray, world)
+                    col += color(ray, world, 1)
                 }
                 col /= antiAliasing.toDouble()
                 val r = (sqrt(col.r()) * 255.99).toInt()
@@ -62,9 +84,11 @@ fun main() {
 }
 
 private fun makeWorld(): Hitable {
-    val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5)
-    val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0)
-    return HitableList(listOf(smallSphere, largeSphere))
+    val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3)))
+    val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.3)))
+    val firstMetal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.8, 0.6, 0.2)))
+    val secondMetal = Sphere(Vec3(-1.0, 0.0, 1.0), 0.5, Lambertian(Vec3(0.8, 0.8, 0.8)))
+    return HitableList(listOf(smallSphere, largeSphere, firstMetal, secondMetal))
 }
 
 private operator fun Double.times(vec: Vec3): Vec3 {
