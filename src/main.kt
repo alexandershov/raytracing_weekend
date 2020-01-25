@@ -86,8 +86,8 @@ fun main() {
 private fun makeWorld(): Hitable {
     val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3)))
     val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.3)))
-    val firstMetal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.8, 0.6, 0.2)))
-    val secondMetal = Sphere(Vec3(-1.0, 0.0, 1.0), 0.5, Lambertian(Vec3(0.8, 0.8, 0.8)))
+    val firstMetal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.6, 0.2)))
+    val secondMetal = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.8, 0.8)))
     return HitableList(listOf(smallSphere, largeSphere, firstMetal, secondMetal))
 }
 
