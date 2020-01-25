@@ -25,6 +25,38 @@ fun reflect(v: Vec3, normal: Vec3): Vec3 {
     return v - 2.0 * v.dot(normal) * normal
 }
 
+fun refract(v: Vec3, n: Vec3, ni_over_nt: Double): Vec3? {
+    val uv = v.makeUnitVector()
+    val dt = uv.dot(n)
+    val discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt)
+    if (discriminant > 0) {
+        return ni_over_nt * (uv - n * dt) - n * sqrt(discriminant)
+    }
+    return null
+}
+
+
+data class Dielectric(val ri: Double): Material {
+    override fun scatter(incident: Ray, hit: Hit): Scatter? {
+        val outward: Vec3
+        val reflected = reflect(incident.direction, hit.normal)
+        val niOverNt: Double
+        val attenuation = Vec3(1.0, 1.0, 0.0)
+        if (incident.direction.dot(hit.normal) > 0) {
+            outward = -hit.normal
+            niOverNt = ri
+        } else {
+            outward = hit.normal
+            niOverNt = 1.0 / ri
+        }
+        val refraction = refract(incident.direction, outward, niOverNt)
+        if (refraction != null) {
+            return Scatter(Ray(hit.point, refraction), attenuation)
+        }
+        return null
+}
+}
+
 fun color(ray: Ray, world: Hitable, depth: Int): Vec3 {
     val hit = world.hit(ray, 0.001, Double.MAX_VALUE)
     if (hit != null) {
@@ -90,7 +122,7 @@ private fun makeWorld(): Hitable {
     val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3)))
     val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.3)))
     val firstMetal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.6, 0.2), 1.0))
-    val secondMetal = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.8, 0.8), 0.3))
+    val secondMetal = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Dielectric(1.5))
     return HitableList(listOf(smallSphere, largeSphere, firstMetal, secondMetal))
 }
 
