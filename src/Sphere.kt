@@ -12,7 +12,7 @@ data class Sphere(val center: Vec3, val radius: Double, val material: Material) 
                 val t = (-b + sign * sqrt(d)) / (2 * a)
                 if (t in min_t..max_t) {
                     val point = ray.pointAtParameter(t)
-                    val normal = (point - center).makeUnitVector()
+                    val normal = (point - center) / radius
                     return Hit(t, point, normal, material)
                 }
             }
