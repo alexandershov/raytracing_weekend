@@ -1,6 +1,7 @@
 import java.io.File
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlin.random.Random
 import kotlin.random.Random.Default.nextDouble
 
 
@@ -143,6 +144,31 @@ private fun makeWorld(): Hitable {
     val firstDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Dielectric(1.5))
     val secondDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), -0.45, Dielectric(1.5))
     return HitableList(listOf(smallSphere, largeSphere, metal, firstDielectric, secondDielectric))
+}
+
+private fun makeRandomWorld(): Hitable {
+    val items : MutableList<Hitable> = mutableListOf()
+    val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(Vec3(0.5, 0.5, 0.5)))
+    items.add(largeSphere)
+    for (a in -11..10) {
+        for (b in -11..10) {
+            val chooseMat = nextDouble()
+            val center = Vec3(a + 0.9 * nextDouble(), 0.2, b + 0.9 * nextDouble())
+            if ((center - Vec3(4.0, 0.2, 0.0)).length() > 0.9) {
+                if (chooseMat < 0.8) {
+                    items.add(Sphere(center, 0.2, Lambertian(Vec3(nextDouble() * nextDouble(), nextDouble() * nextDouble(), nextDouble() * nextDouble()))))
+                } else if (chooseMat < 0.95) {
+                    items.add(Sphere(center, 0.2, Metal(Vec3(0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble())), 0.5 * nextDouble())))
+                } else {
+                    items.add(Sphere(center, 0.2, Dielectric(1.5)))
+                }
+            }
+        }
+    }
+    items.add(Sphere(Vec3(0.0, 1.0, 0.0), 1.0, Dielectric(1.5)))
+    items.add(Sphere(Vec3(-4.0, 1.0, 0.0), 1.0, Lambertian(Vec3(0.4, 0.2, 0.1))))
+    items.add(Sphere(Vec3(4.0, 1.0, 0.0), 1.0, Metal(Vec3(0.7, 0.6, 0.5), 0.0)))
+    return HitableList(items)
 }
 
 private operator fun Double.times(vec: Vec3): Vec3 {
