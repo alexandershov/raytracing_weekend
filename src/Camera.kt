@@ -19,23 +19,26 @@ class Camera(
     private var vertical: Vec3
     private var origin: Vec3
     private var lensRadius: Double = aperture / 2.0
+    private var u: Vec3
+    private var w: Vec3
+    private var v: Vec3
 
     init {
         val theta = PI * vfov / 180.0
         val halfHeight = tan(theta / 2)
         val halfWidth = halfHeight * aspect
         origin = lookFrom
-        val w = (lookFrom - lookAt).makeUnitVector()
-        val u = vup.cross(w).makeUnitVector()
-        val v = w.cross(u)
+        w = (lookFrom - lookAt).makeUnitVector()
+        u = vup.cross(w).makeUnitVector()
+        v = w.cross(u)
         lowerLeftCorner = origin - u * (halfWidth * focusDist) - v * (halfHeight * focusDist) - w * focusDist
         horizontal = u * halfWidth * 2.0 * focusDist
         vertical = v * halfHeight * 2.0 * focusDist
     }
 
-    fun getRay(u: Double, v: Double): Ray {
+    fun getRay(s: Double, t: Double): Ray {
         val rd = randomInUnitDisc() * lensRadius
         val offset = u * rd.x + v * rd.y
-        return Ray(origin + offset, lowerLeftCorner + horizontal * u + vertical * v - origin + (-1 * offset))
+        return Ray(origin + offset, lowerLeftCorner + horizontal * s + vertical * t - origin + (offset * -1.0))
     }
 }
