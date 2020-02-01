@@ -99,9 +99,13 @@ fun randomInUnitSphere(): Vec3 {
 }
 
 fun makeCamera(nx: Int, ny: Int): Camera {
+    val lookFrom = Vec3(3.0, 3.0, 2.0)
+    val lookAt = Vec3(0.0, 0.0, -1.0)
+    val focusDist = (lookFrom - lookAt).length()
+    val aperture = 100.0
     return Camera(
-        Vec3(-2.0, 2.0, 1.0), Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0), 90.0,
-        nx.toDouble() / ny.toDouble()
+        lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0,
+        nx.toDouble() / ny.toDouble(), aperture, focusDist
     )
 }
 

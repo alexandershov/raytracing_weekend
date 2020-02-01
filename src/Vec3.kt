@@ -5,6 +5,10 @@ data class Vec3(var x: Double, var y: Double, var z: Double) {
         return Vec3(x + other.x, y + other.y, z + other.z)
     }
 
+    operator fun plus(other: Double): Vec3 {
+        return Vec3(x + other, y + other, z + other)
+    }
+
     operator fun minus(other: Vec3): Vec3 {
         return Vec3(x - other.x, y - other.y, z - other.z)
     }
