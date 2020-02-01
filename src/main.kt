@@ -12,7 +12,7 @@ data class Lambertian(val albedo: Vec3) : Material {
     }
 }
 
-data class Metal(val albedo: Vec3, val f: Double): Material {
+data class Metal(val albedo: Vec3, val f: Double) : Material {
     override fun scatter(incident: Ray, hit: Hit): Scatter? {
         val reflection = Ray(hit.point, reflect(incident.direction, hit.normal) + f * randomInUnitSphere())
         if (reflection.direction.dot(hit.normal) <= 0) {
@@ -43,7 +43,7 @@ fun schlick(cosine: Double, refIdx: Double): Double {
 }
 
 
-data class Dielectric(val ri: Double): Material {
+data class Dielectric(val ri: Double) : Material {
     override fun scatter(incident: Ray, hit: Hit): Scatter? {
         val outward: Vec3
         val reflected = reflect(incident.direction, hit.normal)
@@ -99,7 +99,10 @@ fun randomInUnitSphere(): Vec3 {
 }
 
 fun makeCamera(nx: Int, ny: Int): Camera {
-    return Camera(90.0, nx.toDouble() / ny.toDouble())
+    return Camera(
+        Vec3(-2.0, 2.0, 1.0), Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0), 95.0,
+        nx.toDouble() / ny.toDouble()
+    )
 }
 
 fun main() {

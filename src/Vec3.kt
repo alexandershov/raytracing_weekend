@@ -71,7 +71,7 @@ data class Vec3(var x: Double, var y: Double, var z: Double) {
         return sqrt(squaredLength())
     }
 
-    fun squaredLength(): Double {
+    private fun squaredLength(): Double {
         return this.dot(this)
     }
 
