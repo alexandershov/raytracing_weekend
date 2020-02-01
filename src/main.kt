@@ -98,12 +98,8 @@ fun randomInUnitSphere(): Vec3 {
     }
 }
 
-fun makeCamera(): Camera {
-    val lowerLeft = Vec3(-2.0, -1.0, -1.0)
-    val horizontal = Vec3(4.0, 0.0, 0.0)
-    val vertical = Vec3(0.0, 2.0, 0.0)
-    val origin = Vec3(0.0, 0.0, 0.0)
-    return Camera(origin, lowerLeft, horizontal, vertical)
+fun makeCamera(nx: Int, ny: Int): Camera {
+    return Camera(90.0, nx.toDouble() / ny.toDouble())
 }
 
 fun main() {
@@ -111,7 +107,7 @@ fun main() {
         val nx = 200
         val ny = 100
         out.print("P3\n$nx $ny\n255\n")
-        val camera = makeCamera()
+        val camera = makeCamera(nx, ny)
         val world = makeWorld()
         val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
