@@ -17,7 +17,6 @@ class Camera(lookFrom: Vec3, lookAt: Vec3, vup: Vec3, vfov: Double, aspect: Doub
         val v = w.cross(u)
         horizontal = u * halfWidth * 2.0
         vertical = v * halfHeight * 2.0
-//        lowerLeftCorner = lookAt - horizontal / 2.0 - vertical / 2.0
         lowerLeftCorner = origin - horizontal / 2.0 - vertical / 2.0 - w
     }
     fun getRay(u: Double, v: Double): Ray {
