@@ -102,7 +102,7 @@ fun makeCamera(nx: Int, ny: Int): Camera {
     val lookFrom = Vec3(3.0, 3.0, 2.0)
     val lookAt = Vec3(0.0, 0.0, -1.0)
     val focusDist = (lookFrom - lookAt).length()
-    val aperture = 100.0
+    val aperture = 2.0
     return Camera(
         lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0,
         nx.toDouble() / ny.toDouble(), aperture, focusDist
