@@ -100,7 +100,7 @@ fun randomInUnitSphere(): Vec3 {
 
 fun makeCamera(nx: Int, ny: Int): Camera {
     return Camera(
-        Vec3(-2.0, 2.0, 1.0), Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0), 95.0,
+        Vec3(-2.0, 2.0, 1.0), Vec3(0.0, 0.0, -1.0), Vec3(0.0, 1.0, 0.0), 90.0,
         nx.toDouble() / ny.toDouble()
     )
 }
