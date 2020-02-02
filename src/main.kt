@@ -141,7 +141,7 @@ fun main() {
 private fun makeWorld(): Hitable {
     val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.1, 0.2, 0.5)))
     val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.0)))
-    val metal = Sphere(Vec3(1.0, 0.0, -1.0), 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.0))
+    val metal = MovingSphere(Vec3(1.0, 0.0, -1.0), Vec3(1.0, 0.2, -1.0), 0.0, 1.0, 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.0))
     val firstDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Dielectric(1.5))
     val secondDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), -0.45, Dielectric(1.5))
     return HitableList(listOf(smallSphere, largeSphere, metal, firstDielectric, secondDielectric))
