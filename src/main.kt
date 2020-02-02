@@ -9,13 +9,14 @@ data class Lambertian(val albedo: Vec3) : Material {
     override fun scatter(incident: Ray, hit: Hit): Scatter? {
         val center = hit.point + hit.normal
         val point = center + randomInUnitSphere()
-        return Scatter(Ray(hit.point, point - hit.point), albedo)
+        return Scatter(Ray(hit.point, point - hit.point, incident.time), albedo)
     }
 }
 
 data class Metal(val albedo: Vec3, val f: Double) : Material {
     override fun scatter(incident: Ray, hit: Hit): Scatter? {
-        val reflection = Ray(hit.point, reflect(incident.direction, hit.normal) + f * randomInUnitSphere())
+        val reflection =
+            Ray(hit.point, reflect(incident.direction, hit.normal) + f * randomInUnitSphere(), incident.time)
         if (reflection.direction.dot(hit.normal) <= 0) {
             return null
         }
@@ -64,11 +65,11 @@ data class Dielectric(val ri: Double) : Material {
         if (refraction != null) {
             val reflectProb = schlick(cosine, ri)
             if (nextDouble() < reflectProb) {
-                return Scatter(Ray(hit.point, reflected), attenuation)
+                return Scatter(Ray(hit.point, reflected, incident.time), attenuation)
             }
-            return Scatter(Ray(hit.point, refraction), attenuation)
+            return Scatter(Ray(hit.point, refraction, incident.time), attenuation)
         } else {
-            return Scatter(Ray(hit.point, reflected), attenuation)
+            return Scatter(Ray(hit.point, reflected, incident.time), attenuation)
         }
     }
 }
@@ -103,10 +104,10 @@ fun makeCamera(nx: Int, ny: Int): Camera {
     val lookFrom = Vec3(3.0, 3.0, 2.0)
     val lookAt = Vec3(0.0, 0.0, -1.0)
     val focusDist = (lookAt - lookFrom).length()
-    val aperture = 2.0
+    val aperture = 0.1
     return Camera(
         lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0,
-        nx.toDouble() / ny.toDouble(), aperture, focusDist
+        nx.toDouble() / ny.toDouble(), aperture, focusDist, startAt=0.0, endAt=1.0
     )
 }
 
@@ -147,7 +148,7 @@ private fun makeWorld(): Hitable {
 }
 
 private fun makeRandomWorld(): Hitable {
-    val items : MutableList<Hitable> = mutableListOf()
+    val items: MutableList<Hitable> = mutableListOf()
     val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(Vec3(0.5, 0.5, 0.5)))
     items.add(largeSphere)
     for (a in -11..10) {
@@ -156,9 +157,30 @@ private fun makeRandomWorld(): Hitable {
             val center = Vec3(a + 0.9 * nextDouble(), 0.2, b + 0.9 * nextDouble())
             if ((center - Vec3(4.0, 0.2, 0.0)).length() > 0.9) {
                 if (chooseMat < 0.8) {
-                    items.add(Sphere(center, 0.2, Lambertian(Vec3(nextDouble() * nextDouble(), nextDouble() * nextDouble(), nextDouble() * nextDouble()))))
+                    items.add(
+                        Sphere(
+                            center,
+                            0.2,
+                            Lambertian(
+                                Vec3(
+                                    nextDouble() * nextDouble(),
+                                    nextDouble() * nextDouble(),
+                                    nextDouble() * nextDouble()
+                                )
+                            )
+                        )
+                    )
                 } else if (chooseMat < 0.95) {
-                    items.add(Sphere(center, 0.2, Metal(Vec3(0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble())), 0.5 * nextDouble())))
+                    items.add(
+                        Sphere(
+                            center,
+                            0.2,
+                            Metal(
+                                Vec3(0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble())),
+                                0.5 * nextDouble()
+                            )
+                        )
+                    )
                 } else {
                     items.add(Sphere(center, 0.2, Dielectric(1.5)))
                 }

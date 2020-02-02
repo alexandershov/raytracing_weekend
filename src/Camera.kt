@@ -13,7 +13,7 @@ fun randomInUnitDisc(): Vec3 {
 
 class Camera(
     lookFrom: Vec3, lookAt: Vec3, vup: Vec3, vfov: Double, aspect: Double,
-    aperture: Double, focusDist: Double) {
+    aperture: Double, focusDist: Double, val startAt: Double, val endAt: Double) {
     private var lowerLeftCorner: Vec3
     private var horizontal: Vec3
     private var vertical: Vec3
@@ -39,6 +39,7 @@ class Camera(
     fun getRay(s: Double, t: Double): Ray {
         val rd = randomInUnitDisc() * lensRadius
         val offset = u * rd.x + v * rd.y
-        return Ray(origin + offset, lowerLeftCorner + horizontal * s + vertical * t - origin + (offset * -1.0))
+        val time = startAt + Random.nextDouble() * (endAt - startAt)
+        return Ray(origin + offset, lowerLeftCorner + horizontal * s + vertical * t - origin + (offset * -1.0), time)
     }
 }
