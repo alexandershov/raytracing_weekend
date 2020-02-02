@@ -156,33 +156,40 @@ private fun makeRandomWorld(): Hitable {
             val chooseMat = nextDouble()
             val center = Vec3(a + 0.9 * nextDouble(), 0.2, b + 0.9 * nextDouble())
             if ((center - Vec3(4.0, 0.2, 0.0)).length() > 0.9) {
-                if (chooseMat < 0.8) {
-                    items.add(
-                        Sphere(
-                            center,
-                            0.2,
-                            Lambertian(
-                                Vec3(
-                                    nextDouble() * nextDouble(),
-                                    nextDouble() * nextDouble(),
-                                    nextDouble() * nextDouble()
+                when {
+                    chooseMat < 0.8 -> {
+                        items.add(
+                            MovingSphere(
+                                center,
+                                center + Vec3(0.0, 0.5 * nextDouble(), 0.0),
+                                0.0,
+                                1.0,
+                                0.2,
+                                Lambertian(
+                                    Vec3(
+                                        nextDouble() * nextDouble(),
+                                        nextDouble() * nextDouble(),
+                                        nextDouble() * nextDouble()
+                                    )
                                 )
                             )
                         )
-                    )
-                } else if (chooseMat < 0.95) {
-                    items.add(
-                        Sphere(
-                            center,
-                            0.2,
-                            Metal(
-                                Vec3(0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble())),
-                                0.5 * nextDouble()
+                    }
+                    chooseMat < 0.95 -> {
+                        items.add(
+                            Sphere(
+                                center,
+                                0.2,
+                                Metal(
+                                    Vec3(0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble()), 0.5 * (1 + nextDouble())),
+                                    0.5 * nextDouble()
+                                )
                             )
                         )
-                    )
-                } else {
-                    items.add(Sphere(center, 0.2, Dielectric(1.5)))
+                    }
+                    else -> {
+                        items.add(Sphere(center, 0.2, Dielectric(1.5)))
+                    }
                 }
             }
         }
