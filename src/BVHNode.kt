@@ -1,5 +1,3 @@
-import kotlin.math.min
-
 data class BVHNode(val left: Hitable, val right: Hitable, val box: Aabb) : Hitable {
     override fun hit(ray: Ray, min_t: Double, max_t: Double): Hit? {
         val myHit = box.hit(ray, min_t, max_t)
