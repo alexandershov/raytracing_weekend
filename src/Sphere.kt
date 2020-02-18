@@ -19,4 +19,8 @@ data class Sphere(val center: Vec3, val radius: Double, val material: Material) 
         }
         return null
     }
+
+    override fun boundingBox(t0: Double, t1: Double): Aabb? {
+        return Aabb(center - Vec3(radius, radius, radius), center + Vec3(radius, radius, radius))
+    }
 }
