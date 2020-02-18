@@ -20,7 +20,7 @@ data class Aabb(val min: Vec3, val max: Vec3) {
     fun union(other: Aabb): Aabb {
         return Aabb(
             Vec3(min(min.x, other.min.x), min(min.y, other.min.y), min(min.z, other.min.z)),
-            Vec3(max(max.x, other.max.x), min(max.y, other.max.y), min(max.z, other.max.z))
+            Vec3(max(max.x, other.max.x), max(max.y, other.max.y), max(max.z, other.max.z))
         )
     }
 }
