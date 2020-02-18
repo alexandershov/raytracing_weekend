@@ -117,7 +117,7 @@ fun main() {
         val ny = 100
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCamera(nx, ny)
-        val world = makeBVHNode(makeWorld(), camera.startAt, camera.endAt)
+        val world = makeBVHNode(makeRandomWorld(), camera.startAt, camera.endAt)
         val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
