@@ -107,7 +107,7 @@ fun makeCamera(nx: Int, ny: Int): Camera {
     val aperture = 0.1
     return Camera(
         lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0,
-        nx.toDouble() / ny.toDouble(), aperture, focusDist, startAt=0.0, endAt=1.0
+        nx.toDouble() / ny.toDouble(), aperture, focusDist, startAt = 0.0, endAt = 1.0
     )
 }
 
@@ -117,7 +117,7 @@ fun main() {
         val ny = 100
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCamera(nx, ny)
-        val world = makeWorld()
+        val world = makeBVHNode(makeWorld(), camera.startAt, camera.endAt)
         val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
@@ -138,16 +138,44 @@ fun main() {
     }
 }
 
-private fun makeWorld(): Hitable {
+private fun makeWorld(): List<Hitable> {
     val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.1, 0.2, 0.5)))
     val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.0)))
     val metal = MovingSphere(Vec3(1.0, 0.0, -1.0), Vec3(1.0, 0.2, -1.0), 0.0, 1.0, 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.0))
     val firstDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Dielectric(1.5))
     val secondDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), -0.45, Dielectric(1.5))
-    return HitableList(listOf(smallSphere, largeSphere, metal, firstDielectric, secondDielectric))
+    return listOf(smallSphere, largeSphere, metal, firstDielectric, secondDielectric)
 }
 
-private fun makeRandomWorld(): Hitable {
+private fun makeBVHNode(items: List<Hitable>, t0: Double, t1: Double): BVHNode {
+    assert(items.isNotEmpty())
+    if (items.size == 1) {
+        return BVHNode(items[0], items[0], items[0].boundingBox(t0, t1)!!)
+    }
+    val axis = Random.nextInt(3)
+    val fns = listOf(::byX, ::byY, ::byZ)
+    val sorted = items.sortedBy { item -> fns[axis](item.boundingBox(t0, t1)!!.min) }
+    return BVHNode(
+        makeBVHNode(sorted.subList(0, sorted.size / 2), t0, t1),
+        makeBVHNode(sorted.subList(sorted.size / 2, sorted.size), t0, t1),
+        HitableList(items).boundingBox(t0, t1)!!
+    )
+}
+
+
+private fun byX(v: Vec3): Double {
+    return v.x
+}
+
+private fun byY(v: Vec3): Double {
+    return v.y
+}
+
+private fun byZ(v: Vec3): Double {
+    return v.z
+}
+
+private fun makeRandomWorld(): List<Hitable> {
     val items: MutableList<Hitable> = mutableListOf()
     val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(Vec3(0.5, 0.5, 0.5)))
     items.add(largeSphere)
@@ -197,7 +225,7 @@ private fun makeRandomWorld(): Hitable {
     items.add(Sphere(Vec3(0.0, 1.0, 0.0), 1.0, Dielectric(1.5)))
     items.add(Sphere(Vec3(-4.0, 1.0, 0.0), 1.0, Lambertian(Vec3(0.4, 0.2, 0.1))))
     items.add(Sphere(Vec3(4.0, 1.0, 0.0), 1.0, Metal(Vec3(0.7, 0.6, 0.5), 0.0)))
-    return HitableList(items)
+    return items
 }
 
 private operator fun Double.times(vec: Vec3): Vec3 {
