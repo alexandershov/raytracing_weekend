@@ -1,7 +1,7 @@
 import kotlin.math.max
 import kotlin.math.min
 
-data class Aabb(val min: Vec3, val max: Vec3)  {
+data class Aabb(val min: Vec3, val max: Vec3) {
     fun hit(ray: Ray, tmin: Double, tmax: Double): Boolean {
         var curMin = tmin
         var curMax = tmax
@@ -15,5 +15,12 @@ data class Aabb(val min: Vec3, val max: Vec3)  {
             }
         }
         return curMin < curMax
+    }
+
+    fun union(other: Aabb): Aabb {
+        return Aabb(
+            Vec3(min(min.x, other.min.x), min(min.y, other.min.y), min(min.z, other.min.z)),
+            Vec3(max(max.x, other.max.x), min(max.y, other.max.y), min(max.z, other.max.z))
+        )
     }
 }
