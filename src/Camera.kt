@@ -25,15 +25,15 @@ class Camera(
 
     init {
         val theta = PI * vfov / 180.0
-        val halfHeight = tan(theta / 2)
+        val halfHeight = tan(theta / 2) * focusDist
         val halfWidth = halfHeight * aspect
         origin = lookFrom
         w = (lookFrom - lookAt).makeUnitVector()
         u = vup.cross(w).makeUnitVector()
         v = w.cross(u)
-        lowerLeftCorner = origin - u * (halfWidth * focusDist) - v * (halfHeight * focusDist) - w * focusDist
-        horizontal = u * halfWidth * 2.0 * focusDist
-        vertical = v * halfHeight * 2.0 * focusDist
+        lowerLeftCorner = origin - u * (halfWidth) - v * (halfHeight) - w * focusDist
+        horizontal = u * halfWidth * 2.0
+        vertical = v * halfHeight * 2.0
     }
 
     fun getRay(s: Double, t: Double): Ray {
