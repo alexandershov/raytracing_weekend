@@ -5,11 +5,14 @@ import kotlin.random.Random
 import kotlin.random.Random.Default.nextDouble
 
 
-data class Lambertian(val albedo: Vec3) : Material {
+data class Lambertian(val texture: Texture) : Material {
     override fun scatter(incident: Ray, hit: Hit): Scatter? {
         val center = hit.point + hit.normal
         val point = center + randomInUnitSphere()
-        return Scatter(Ray(hit.point, point - hit.point, incident.time), albedo)
+        return Scatter(
+            Ray(hit.point, point - hit.point, incident.time),
+            texture.value(0.0, 0.0, hit.point)
+        )
     }
 }
 
@@ -139,8 +142,8 @@ fun main() {
 }
 
 private fun makeWorld(): List<Hitable> {
-    val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(Vec3(0.1, 0.2, 0.5)))
-    val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(Vec3(0.8, 0.8, 0.0)))
+    val smallSphere = Sphere(Vec3(0.0, 0.0, -1.0), 0.5, Lambertian(ConstantTexture(Vec3(0.1, 0.2, 0.5))))
+    val largeSphere = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, Lambertian(ConstantTexture(Vec3(0.8, 0.8, 0.0))))
     val metal = MovingSphere(Vec3(1.0, 0.0, -1.0), Vec3(1.0, 0.2, -1.0), 0.0, 1.0, 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.0))
     val firstDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), 0.5, Dielectric(1.5))
     val secondDielectric = Sphere(Vec3(-1.0, 0.0, -1.0), -0.45, Dielectric(1.5))
@@ -177,7 +180,7 @@ private fun byZ(v: Vec3): Double {
 
 private fun makeRandomWorld(): List<Hitable> {
     val items: MutableList<Hitable> = mutableListOf()
-    val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(Vec3(0.5, 0.5, 0.5)))
+    val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(ConstantTexture(Vec3(0.5, 0.5, 0.5))))
     items.add(largeSphere)
     for (a in -11..10) {
         for (b in -11..10) {
@@ -194,10 +197,12 @@ private fun makeRandomWorld(): List<Hitable> {
                                 1.0,
                                 0.2,
                                 Lambertian(
-                                    Vec3(
-                                        nextDouble() * nextDouble(),
-                                        nextDouble() * nextDouble(),
-                                        nextDouble() * nextDouble()
+                                    ConstantTexture(
+                                        Vec3(
+                                            nextDouble() * nextDouble(),
+                                            nextDouble() * nextDouble(),
+                                            nextDouble() * nextDouble()
+                                        )
                                     )
                                 )
                             )
@@ -223,7 +228,7 @@ private fun makeRandomWorld(): List<Hitable> {
         }
     }
     items.add(Sphere(Vec3(0.0, 1.0, 0.0), 1.0, Dielectric(1.5)))
-    items.add(Sphere(Vec3(-4.0, 1.0, 0.0), 1.0, Lambertian(Vec3(0.4, 0.2, 0.1))))
+    items.add(Sphere(Vec3(-4.0, 1.0, 0.0), 1.0, Lambertian(ConstantTexture(Vec3(0.4, 0.2, 0.1)))))
     items.add(Sphere(Vec3(4.0, 1.0, 0.0), 1.0, Metal(Vec3(0.7, 0.6, 0.5), 0.0)))
     return items
 }
