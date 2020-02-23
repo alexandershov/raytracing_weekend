@@ -3,6 +3,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextDouble
+import kotlin.reflect.jvm.internal.impl.util.Check
 
 
 data class Lambertian(val texture: Texture) : Material {
@@ -119,8 +120,8 @@ fun main() {
         val nx = 200
         val ny = 100
         out.print("P3\n$nx $ny\n255\n")
-        val camera = makeCamera(nx, ny)
-        val world = makeBVHNode(makeWorld(), camera.startAt, camera.endAt)
+        val camera = makeCheckeredCamera(nx, ny)
+        val world = makeBVHNode(makeCheckeredWorld(), camera.startAt, camera.endAt)
         val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
@@ -139,6 +140,21 @@ fun main() {
             }
         }
     }
+}
+
+private fun makeCheckeredWorld(): List<Hitable> {
+    val checker = CheckeredTexture(ConstantTexture(Vec3(0.2, 0.3, 0.1)), ConstantTexture(Vec3(0.9, 0.9, 0.9)))
+    val bottom = Sphere(Vec3(0.0, -10.0, 0.0), 10.0, Lambertian(checker))
+    val top = Sphere(Vec3(0.0, 10.0, 0.0), 10.0, Lambertian(checker))
+    return listOf(bottom, top)
+}
+
+private fun makeCheckeredCamera(nx: Int, ny: Int): Camera {
+    val lookFrom = Vec3(13.0, 2.0, 3.0)
+    val lookAt = Vec3(0.0, 0.0, 0.0)
+    val distToFocus = 10.0
+    val aperture = 0.0
+    return Camera(lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0, nx.toDouble() / ny.toDouble(), aperture, distToFocus, 0.0, 1.0)
 }
 
 private fun makeWorld(): List<Hitable> {
