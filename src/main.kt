@@ -108,7 +108,7 @@ fun makeCamera(nx: Int, ny: Int): Camera {
     val lookFrom = Vec3(3.0, 3.0, 2.0)
     val lookAt = Vec3(0.0, 0.0, -1.0)
     val focusDist = (lookAt - lookFrom).length()
-    val aperture = 2.0
+    val aperture = 0.0
     return Camera(
         lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0,
         nx.toDouble() / ny.toDouble(), aperture, focusDist, startAt = 0.0, endAt = 1.0
@@ -196,7 +196,8 @@ private fun byZ(v: Vec3): Double {
 
 private fun makeRandomWorld(): List<Hitable> {
     val items: MutableList<Hitable> = mutableListOf()
-    val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(ConstantTexture(Vec3(0.5, 0.5, 0.5))))
+    val checker = CheckeredTexture(ConstantTexture(Vec3(0.2, 0.3, 0.1)), ConstantTexture(Vec3(0.9, 0.9, 0.9)))
+    val largeSphere = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(checker))
     items.add(largeSphere)
     for (a in -11..10) {
         for (b in -11..10) {
