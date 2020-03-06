@@ -121,7 +121,7 @@ fun main() {
         val ny = 100
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCheckeredCamera(nx, ny)
-        val world = makeBVHNode(makeCheckeredWorld(), camera.startAt, camera.endAt)
+        val world = makeBVHNode(makePerlinWorld(), camera.startAt, camera.endAt)
         val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
@@ -155,6 +155,13 @@ private fun makeCheckeredCamera(nx: Int, ny: Int): Camera {
     val distToFocus = 10.0
     val aperture = 0.0
     return Camera(lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 20.0, nx.toDouble() / ny.toDouble(), aperture, distToFocus, 0.0, 1.0)
+}
+
+private fun makePerlinWorld(): List<Hitable> {
+    val texture = NoiseTexture()
+    val large = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(texture))
+    val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(texture))
+    return listOf(large, small)
 }
 
 private fun makeWorld(): List<Hitable> {
