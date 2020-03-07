@@ -7,9 +7,10 @@ class Perlin {
     private val ranDouble = perlinGenerate()
 
     fun noise(p: Vec3): Double {
-        val i = (p.x * 4.0).toInt() and 255
-        val j = (p.y * 4.0).toInt() and 255
-        val k = (p.z * 4.0).toInt() and 255
+        val scale = 4.0
+        val i = (p.x * scale).toInt() and 255
+        val j = (p.y * scale).toInt() and 255
+        val k = (p.z * scale).toInt() and 255
         return ranDouble[permX[i] xor permY[j] xor permZ[k]]
     }
 }
