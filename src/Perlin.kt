@@ -35,7 +35,8 @@ private fun hermit(u: Double): Double {
 class NoiseTexture : Texture {
     private val perlin = Perlin()
     override fun value(u: Double, v: Double, p: Vec3): Vec3 {
-        return Vec3(1.0, 1.0, 1.0) * perlin.noise(p)
+        val scale = 4.0
+        return Vec3(1.0, 1.0, 1.0) * perlin.noise(p * scale)
     }
 }
 
