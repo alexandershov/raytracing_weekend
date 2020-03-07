@@ -1,4 +1,3 @@
-import kotlin.math.floor
 import kotlin.random.Random
 
 class Perlin {
