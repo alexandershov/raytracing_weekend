@@ -12,9 +12,9 @@ class Perlin {
         val i = floor(p.x).toInt()
         val j = floor(p.y).toInt()
         val k = floor(p.z).toInt()
-        val u = p.x - i
-        val v = p.y - j
-        val w = p.z - k
+        val u = hermit(p.x - i)
+        val v = hermit(p.y - j)
+        val w = hermit(p.z - k)
         val c = Array(2) { Array(2) { Array(2) { 0.0 } } }
         for (di in 0..1) {
             for (dj in 0..1) {
@@ -26,6 +26,10 @@ class Perlin {
         }
         return trilinearInterp(c, u, v, w)
     }
+}
+
+private fun hermit(u: Double): Double {
+    return u * u * (3 - 2 * u)
 }
 
 class NoiseTexture : Texture {
