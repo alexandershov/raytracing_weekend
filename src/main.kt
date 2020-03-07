@@ -117,8 +117,8 @@ fun makeCamera(nx: Int, ny: Int): Camera {
 
 fun main() {
     File("scene.ppm").printWriter().use { out ->
-        val nx = 200
-        val ny = 100
+        val nx = 400
+        val ny = 200
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCheckeredCamera(nx, ny)
         val world = makeBVHNode(makePerlinWorld(), camera.startAt, camera.endAt)
