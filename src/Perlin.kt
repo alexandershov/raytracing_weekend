@@ -1,3 +1,4 @@
+import kotlin.math.absoluteValue
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -25,6 +26,18 @@ class Perlin {
         }
         return trilinearInterp(c, u, v, w)
     }
+
+    fun turb(p: Vec3): Double {
+        var accum = 0.0
+        var temp = p
+        var weight = 1.0
+        for (i in 0..6) {
+            accum += weight * noise(temp)
+            temp *= 2.0
+            weight *= 0.5
+        }
+        return accum.absoluteValue
+    }
 }
 
 private fun hermit(u: Double): Double {
@@ -35,7 +48,7 @@ class NoiseTexture : Texture {
     private val perlin = Perlin()
     override fun value(u: Double, v: Double, p: Vec3): Vec3 {
         val scale = 4.0
-        return Vec3(1.0, 1.0, 1.0) * perlin.noise(p * scale)
+        return Vec3(1.0, 1.0, 1.0) * perlin.turb(p * scale)
     }
 }
 
