@@ -15,7 +15,8 @@ data class Sphere(val center: Vec3, val radius: Double, val material: Material) 
                 if (t in min_t..max_t) {
                     val point = ray.pointAtParameter(t)
                     val normal = (point - center) / radius
-                    return Hit(t, point, normal, material)
+                    val uv = getUv((point - center) / radius)
+                    return Hit(t, point, normal, uv.first, uv.second, material)
                 }
             }
         }

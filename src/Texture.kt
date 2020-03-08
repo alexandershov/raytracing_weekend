@@ -36,6 +36,6 @@ data class ImageTexture(val path: String) : Texture {
         val x = (img.width - 1) * u
         val y = (img.height - 1) * v
         val color = Color(img.getRGB(x.toInt(), y.toInt()))
-        return Vec3(color.red/ 255.0, color.green / 255.0, color.blue / 255.0)
+        return Vec3(color.red / 255.0, color.green / 255.0, color.blue / 255.0)
     }
 }

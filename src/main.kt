@@ -12,7 +12,7 @@ data class Lambertian(val texture: Texture) : Material {
         val point = center + randomInUnitSphere()
         return Scatter(
             Ray(hit.point, point - hit.point, incident.time),
-            texture.value(0.0, 0.0, hit.point)
+            texture.value(hit.u, hit.v, hit.point)
         )
     }
 }
