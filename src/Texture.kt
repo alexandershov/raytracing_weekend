@@ -35,7 +35,7 @@ data class ImageTexture(val path: String) : Texture {
     override fun value(u: Double, v: Double, p: Vec3): Vec3 {
         val x = (img.width - 1) * u
         val y = (img.height - 1) * v
-        val color = Color(img.getRGB(x.toInt(), y.toInt()))
+        val color = Color(img.getRGB(x.toInt(), img.height - 1 - y.toInt()))
         return Vec3(color.red / 255.0, color.green / 255.0, color.blue / 255.0)
     }
 }

@@ -32,5 +32,5 @@ data class Sphere(val center: Vec3, val radius: Double, val material: Material) 
 private fun getUv(p: Vec3): Pair<Double, Double> {
     val phi = atan2(p.x, p.z) + Math.PI
     val theta = acos(p.y)
-    return Pair(phi / (2 * Math.PI), theta / Math.PI)
+    return Pair(phi / (2 * Math.PI), 1 - theta / Math.PI)
 }
