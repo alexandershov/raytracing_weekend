@@ -1,3 +1,5 @@
+import kotlin.math.acos
+import kotlin.math.atan2
 import kotlin.math.sqrt
 
 data class Sphere(val center: Vec3, val radius: Double, val material: Material) : Hitable {
@@ -23,4 +25,11 @@ data class Sphere(val center: Vec3, val radius: Double, val material: Material) 
     override fun boundingBox(t0: Double, t1: Double): Aabb? {
         return Aabb(center - Vec3(radius, radius, radius), center + Vec3(radius, radius, radius))
     }
+}
+
+
+private fun getUv(p: Vec3): Pair<Double, Double> {
+    val phi = atan2(p.x, p.z) + Math.PI
+    val theta = acos(p.y)
+    return Pair(phi / (2 * Math.PI), theta / Math.PI)
 }

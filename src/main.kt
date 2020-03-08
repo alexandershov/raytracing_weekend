@@ -159,8 +159,9 @@ private fun makeCheckeredCamera(nx: Int, ny: Int): Camera {
 
 private fun makePerlinWorld(): List<Hitable> {
     val texture = NoiseTexture()
+    val image = ImageTexture("/Users/aershov/Downloads/earthmap.jpg")
     val large = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(texture))
-    val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(texture))
+    val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(image))
     return listOf(large, small)
 }
 
