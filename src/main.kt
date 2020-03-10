@@ -15,6 +15,10 @@ data class Lambertian(val texture: Texture) : Material {
             texture.value(hit.u, hit.v, hit.point)
         )
     }
+
+    override fun emitted(u: Double, v: Double, p: Vec3): Vec3 {
+        return Vec3(0.0, 0.0, 0.0)
+    }
 }
 
 data class Metal(val albedo: Vec3, val f: Double) : Material {
@@ -26,6 +30,11 @@ data class Metal(val albedo: Vec3, val f: Double) : Material {
         }
         return Scatter(reflection, albedo)
     }
+
+    override fun emitted(u: Double, v: Double, p: Vec3): Vec3 {
+        return Vec3(0.0, 0.0, 0.0)
+    }
+
 }
 
 fun reflect(v: Vec3, normal: Vec3): Vec3 {
@@ -76,17 +85,25 @@ data class Dielectric(val ri: Double) : Material {
             return Scatter(Ray(hit.point, reflected, incident.time), attenuation)
         }
     }
+
+    override fun emitted(u: Double, v: Double, p: Vec3): Vec3 {
+        return Vec3(0.0, 0.0, 0.0)
+    }
+
 }
 
 fun color(ray: Ray, world: Hitable, depth: Int): Vec3 {
     val hit = world.hit(ray, 0.001, Double.MAX_VALUE)
     if (hit != null) {
         val scatter = hit.material.scatter(ray, hit)
+        val emitted = hit.material.emitted(hit.u, hit.v, hit.point)
         if (depth < 50 && scatter != null) {
             val col = color(scatter.ray, world, depth + 1)
-            return scatter.attenuation * col
+            return emitted + scatter.attenuation * col
+        } else {
+            return emitted
         }
-        return Vec3(0.0, 0.0, 0.0)
+
     }
     val unitDirection = ray.direction.makeUnitVector()
     val t = 0.5 * (unitDirection.y + 1)
@@ -154,15 +171,28 @@ private fun makeCheckeredCamera(nx: Int, ny: Int): Camera {
     val lookAt = Vec3(0.0, 0.0, 0.0)
     val distToFocus = 10.0
     val aperture = 0.0
-    return Camera(lookFrom, lookAt, Vec3(0.0, 1.0, 0.0), 35.0, nx.toDouble() / ny.toDouble(), aperture, distToFocus, 0.0, 1.0)
+    return Camera(
+        lookFrom,
+        lookAt,
+        Vec3(0.0, 1.0, 0.0),
+        35.0,
+        nx.toDouble() / ny.toDouble(),
+        aperture,
+        distToFocus,
+        0.0,
+        1.0
+    )
 }
 
 private fun makePerlinWorld(): List<Hitable> {
     val texture = NoiseTexture()
+    val light = DiffuseLight(ConstantTexture(Vec3(4.0, 4.0, 4.0)))
     val image = ImageTexture("/Users/aershov/Downloads/earthmap.jpg")
     val large = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(texture))
     val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(image))
-    return listOf(large, small)
+    val smallLight = Sphere(Vec3(0.0, 7.0, 0.0), 2.0, light)
+    val rect = Rect(light, Vec3(3.0, 1.0, -2.0), Vec3(5.0, 3.0, -2.0), 2)
+    return listOf(large, small, smallLight, rect)
 }
 
 private fun makeWorld(): List<Hitable> {
