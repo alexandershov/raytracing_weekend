@@ -1,9 +1,9 @@
 import java.io.File
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextDouble
-import kotlin.reflect.jvm.internal.impl.util.Check
 
 
 data class Lambertian(val texture: Texture) : Material {
@@ -147,13 +147,17 @@ fun main() {
                     col += color(ray, world, 1)
                 }
                 col /= antiAliasing.toDouble()
-                val r = (sqrt(col.r()) * 255.99).toInt()
-                val g = (sqrt(col.g()) * 255.99).toInt()
-                val b = (sqrt(col.b()) * 255.99).toInt()
+                val r = convertColor(col.r())
+                val g = convertColor(col.g())
+                val b = convertColor(col.b())
                 out.print("$r $g $b\n")
             }
         }
     }
+}
+
+private fun convertColor(x: Double): Int {
+    return (min(sqrt(x), 1.0) * 255.99).toInt()
 }
 
 private fun makeCheckeredWorld(): List<Hitable> {
@@ -186,9 +190,9 @@ private fun makePerlinWorld(): List<Hitable> {
     val light = DiffuseLight(ConstantTexture(Vec3(4.0, 4.0, 4.0)))
     val image = ImageTexture("/Users/aershov/Downloads/earthmap.jpg")
     val large = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(texture))
-    val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(image))
-    val smallLight = Sphere(Vec3(0.0, 7.0, 0.0), 2.0, light)
-    val rect = Rect(light, Vec3(3.0, 1.0, -2.0), Vec3(5.0, 3.0, -2.0), 2)
+    val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(texture))
+    val smallLight = Sphere(Vec3(0.0, 10.0, 0.0), 1.0, light)
+    val rect = Rect(light, Vec3(3.0, 1.0, 0.0), Vec3(4.0, 2.0, 0.0), 2)
     return listOf(large, small, smallLight, rect)
 }
 
