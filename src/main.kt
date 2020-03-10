@@ -103,11 +103,8 @@ fun color(ray: Ray, world: Hitable, depth: Int): Vec3 {
         } else {
             return emitted
         }
-
     }
-    val unitDirection = ray.direction.makeUnitVector()
-    val t = 0.5 * (unitDirection.y + 1)
-    return (1.0 - t) * Vec3(1.0, 1.0, 1.0) + t * Vec3(0.5, 0.7, 1.0)
+    return Vec3(0.0, 0.0, 0.0)
 }
 
 fun randomInUnitSphere(): Vec3 {
