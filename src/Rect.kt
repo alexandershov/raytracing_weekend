@@ -11,10 +11,11 @@ data class Rect(val material: Material, val min: Vec3, val max: Vec3, val plane:
     }
 
     override fun boundingBox(t0: Double, t1: Double): Aabb? {
-        return Aabb(
-            Vec3(min.x, min.y, min.z - 0.001),
-            Vec3(max.x, max.y, max.z + 0.001)
-        )
+        val minBound = Vec3(min.x, min.y, min.z)
+        val maxBound = Vec3(max.x, max.y, max.z)
+        minBound[plane] -= 0.001
+        maxBound[plane] += 0.001
+        return Aabb(minBound, maxBound)
     }
 
     private fun normal(): Vec3 {
