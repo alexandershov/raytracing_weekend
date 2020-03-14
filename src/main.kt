@@ -213,8 +213,9 @@ private fun makeCornellWorld(): List<Hitable> {
     val redWall = Rect(red, Vec3(0.0, 0.0, 0.0), Vec3(0.0, 555.0, 555.0), 0)
     val floor = Rect(white, Vec3(0.0, 0.0, 0.0), Vec3(555.0, 0.0, 555.0), 1)
     val ceiling = Rect(white, Vec3(0.0, 555.0, 0.0), Vec3(555.0, 555.0, 555.0), 1)
+    val farWall = Rect(white, Vec3(0.0, 0.0, 555.0), Vec3(555.0, 555.0, 555.0), 2)
     val lamp = Rect(light, Vec3(213.0, 554.0, 227.0), Vec3(343.0, 554.0, 332.0), 1)
-    return listOf(lamp, greenWall, redWall, floor, ceiling)
+    return listOf(lamp, greenWall, redWall, floor, ceiling, farWall)
 }
 
 
