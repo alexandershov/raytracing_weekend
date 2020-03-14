@@ -210,8 +210,9 @@ private fun makeCornellWorld(): List<Hitable> {
     val green = Lambertian(ConstantTexture(Vec3(0.12, 0.45, 0.15)))
     val light = DiffuseLight(ConstantTexture(Vec3(15.0, 15.0, 15.0)))
     val greenWall = Rect(green, Vec3(555.0, 0.0, 0.0), Vec3(555.0, 555.0, 555.0), 0)
+    val redWall = Rect(red, Vec3(0.0, 0.0, 0.0), Vec3(0.0, 555.0, 555.0), 0)
     val lamp = Rect(light, Vec3(213.0, 554.0, 227.0), Vec3(343.0, 554.0, 332.0), 1)
-    return listOf(lamp, greenWall)
+    return listOf(lamp, greenWall, redWall)
 }
 
 
