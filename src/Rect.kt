@@ -25,13 +25,13 @@ data class Rect(val material: Material, val min: Vec3, val max: Vec3, val plane:
     }
 
     private fun getU(p: Vec3): Double {
-        val map = mapOf(2 to 0, 1 to 0, 0 to 2)
+        val map = mapOf(2 to 0, 1 to 0, 0 to 1)
         val d = map.getValue(plane)
         return (p[d] - min[d]) / (max[d] - min[d])
     }
 
     private fun getV(p: Vec3): Double {
-        val map = mapOf(2 to 1, 1 to 2, 0 to 1)
+        val map = mapOf(2 to 1, 1 to 2, 0 to 2)
         val d = map.getValue(plane)
         return (p[d] - min[d]) / (max[d] - min[d])
     }
