@@ -134,8 +134,8 @@ fun main() {
         val nx = 200
         val ny = 100
         out.print("P3\n$nx $ny\n255\n")
-        val camera = makeCheckeredCamera(nx, ny)
-        val world = makeBVHNode(makePerlinWorld(), camera.startAt, camera.endAt)
+        val camera = makeCornellCamera(nx, ny)
+        val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
         val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
@@ -184,6 +184,36 @@ private fun makeCheckeredCamera(nx: Int, ny: Int): Camera {
         1.0
     )
 }
+
+
+private fun makeCornellCamera(nx: Int, ny: Int): Camera {
+    val lookFrom = Vec3(278.0, 278.0, -800.0)
+    val lookAt = Vec3(278.0, 278.0, 0.0)
+    val distToFocus = 10.0
+    val aperture = 0.0
+    return Camera(
+        lookFrom,
+        lookAt,
+        Vec3(0.0, 1.0, 0.0),
+        40.0,
+        nx.toDouble() / ny.toDouble(),
+        aperture,
+        distToFocus,
+        0.0,
+        1.0
+    )
+}
+
+private fun makeCornellWorld(): List<Hitable> {
+    val red = Lambertian(ConstantTexture(Vec3(0.65, 0.05, 0.05)))
+    val white = Lambertian(ConstantTexture(Vec3(0.73, 0.73, 0.73)))
+    val green = Lambertian(ConstantTexture(Vec3(0.12, 0.45, 0.15)))
+    val light = DiffuseLight(ConstantTexture(Vec3(15.0, 15.0, 15.0)))
+//    val greenWall = Rect(Vec3(), Vec3(), 0.0)
+    val lamp = Rect(light, Vec3(213.0, 554.0, 227.0), Vec3(343.0, 554.0, 332.0), 1)
+    return listOf(lamp)
+}
+
 
 private fun makePerlinWorld(): List<Hitable> {
     val texture = NoiseTexture()
