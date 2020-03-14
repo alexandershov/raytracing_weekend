@@ -1,5 +1,3 @@
-import java.lang.RuntimeException
-
 // plane == 0|1|2 == x|y|z
 data class Rect(val material: Material, val min: Vec3, val max: Vec3, val plane: Int): Hitable {
     override fun hit(ray: Ray, min_t: Double, max_t: Double): Hit? {
@@ -26,18 +24,14 @@ data class Rect(val material: Material, val min: Vec3, val max: Vec3, val plane:
     }
 
     private fun getU(p: Vec3): Double {
-        if (plane == 2) {
-            return (p.x - min.x) / (max.x - min.x)
-        } else {
-            throw RuntimeException()
-        }
+        val map = mapOf(2 to 0, 1 to 0, 0 to 2)
+        val d = map.getValue(plane)
+        return (p[d] - min[d]) / (max[d] - min[d])
     }
 
     private fun getV(p: Vec3): Double {
-        if (plane == 2) {
-            return (p.y - min.y) / (max.y - min.y)
-        } else {
-            throw RuntimeException()
-        }
+        val map = mapOf(2 to 1, 1 to 2, 0 to 1)
+        val d = map.getValue(plane)
+        return (p[d] - min[d]) / (max[d] - min[d])
     }
 }
