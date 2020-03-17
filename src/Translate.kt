@@ -1,8 +1,8 @@
-data class Translate(val hitable: Hitable, val offset: Vec3): Hitable {
+data class Translate(val hitable: Hitable, val offset: Vec3) : Hitable {
     override fun hit(ray: Ray, min_t: Double, max_t: Double): Hit? {
-        val translatedRay = Ray(ray.origin - offset, ray.direction)
+        val translatedRay = ray.copy(origin = ray.origin - offset)
         val hit = hitable.hit(translatedRay, min_t, max_t) ?: return null
-        return hit.copy(point=hit.point + offset)
+        return hit.copy(point = hit.point + offset)
     }
 
     override fun boundingBox(t0: Double, t1: Double): Aabb? {
