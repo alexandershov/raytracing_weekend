@@ -136,7 +136,7 @@ fun main() {
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCornellCamera(nx, ny)
         val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
-        val antiAliasing = 100
+        val antiAliasing = 1000
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
                 var col = Vec3(0.0, 0.0, 0.0)
@@ -215,7 +215,8 @@ private fun makeCornellWorld(): List<Hitable> {
     val ceiling = Rect(white, Vec3(0.0, 555.0, 0.0), Vec3(555.0, 555.0, 555.0), 1)
     val farWall = Rect(white, Vec3(0.0, 0.0, 555.0), Vec3(555.0, 555.0, 555.0), 2)
     val lamp = Rect(light, Vec3(213.0, 554.0, 227.0), Vec3(343.0, 554.0, 332.0), 1)
-    return listOf(lamp, greenWall, redWall, floor, ceiling, farWall)
+    val box = Box(Vec3(200.0, 0.0, 400.0), Vec3(300.0, 300.0, 450.0), red)
+    return listOf(lamp, greenWall, redWall, floor, ceiling, farWall, box)
 }
 
 
