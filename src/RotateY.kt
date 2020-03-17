@@ -39,8 +39,8 @@ data class RotateY(val hitable: Hitable, val angle: Double) : Hitable {
 
     private fun rotate(p: Vec3, angle: Double): Vec3 {
         val r = sqrt(p.dot(p) - p.y * p.y)
-        val alpha = atan2(p.z, p.x)
-        return Vec3(r * cos(angle + alpha), p.y, r * sin(angle + alpha))
+        val alpha = atan2(p.x, p.z)
+        return Vec3(r * sin(angle + alpha), p.y, r * cos(angle + alpha))
     }
 
     private fun rotate(ray: Ray, angle: Double): Ray {
