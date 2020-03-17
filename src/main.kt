@@ -215,8 +215,8 @@ private fun makeCornellWorld(): List<Hitable> {
     val ceiling = Rect(white, Vec3(0.0, 555.0, 0.0), Vec3(555.0, 555.0, 555.0), 1)
     val farWall = Rect(white, Vec3(0.0, 0.0, 555.0), Vec3(555.0, 555.0, 555.0), 2)
     val lamp = Rect(light, Vec3(213.0, 554.0, 227.0), Vec3(343.0, 554.0, 332.0), 1)
-    val wideBox = Box(Vec3(130.0, 0.0, 65.0), Vec3(295.0, 165.0, 230.0), white)
-    val tallBox = Box(Vec3(265.0, 0.0, 295.0), Vec3(430.0, 330.0, 460.0), white)
+    val tallBox = Translate(RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 330.0, 165.0), white), 15.0 / Math.PI), Vec3(265.0, 0.0, 295.0))
+    val wideBox = Translate(RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 165.0, 165.0), white), -18.0 / Math.PI), Vec3(130.0, 0.0, 65.0))
     return listOf(lamp, greenWall, redWall, floor, ceiling, farWall, Translate(tallBox, Vec3(0.0, 100.0, 0.0)), wideBox)
 }
 
