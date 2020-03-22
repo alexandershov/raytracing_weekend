@@ -19,7 +19,7 @@ data class ConstantMedium(val boundary: Hitable, val density: Double, val textur
         val distanceInsideBoundary = (local.t - global.t) * ray.direction.length()
         val hitDistance = (-1.0 / density) * log(Random.nextDouble(), 10.0)
         if (hitDistance < distanceInsideBoundary) {
-            val t = global.t + hitDistance / (ray.direction).length()
+            val t = global.t + hitDistance / ray.direction.length()
             val point = ray.pointAtParameter(t)
             return Hit(t, point, Vec3(1.0, 0.0, 0.0), 0.0, 0.0, phaseFunction)
         }
