@@ -245,8 +245,8 @@ private fun makeCornellWorld(): List<Hitable> {
         RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 165.0, 165.0), white), -18.0 * Math.PI / 180),
         Vec3(130.0, 0.0, 65.0)
     )
-    val smoke = ConstantMedium(wideBox, 0.01, ConstantTexture(Vec3(1.0, 1.0, 1.0)))
-    val fog = ConstantMedium(tallBox, 0.01, ConstantTexture(Vec3(0.0, 0.0, 0.0)))
+    val smoke = ConstantMedium(wideBox, 0.003, ConstantTexture(Vec3(1.0, 1.0, 1.0)))
+    val fog = ConstantMedium(tallBox, 0.003, ConstantTexture(Vec3(0.0, 0.0, 0.0)))
     return listOf(lamp, greenWall, redWall, floor, ceiling, farWall, fog, smoke)
 }
 
