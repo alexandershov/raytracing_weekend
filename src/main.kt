@@ -131,12 +131,12 @@ fun makeCamera(nx: Int, ny: Int): Camera {
 
 fun main() {
     File("scene.ppm").printWriter().use { out ->
-        val nx = 400
-        val ny = 200
+        val nx = 200
+        val ny = 100
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCornellCamera(nx, ny)
         val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
-        val antiAliasing = 100
+        val antiAliasing = 1000
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
                 var col = Vec3(0.0, 0.0, 0.0)
