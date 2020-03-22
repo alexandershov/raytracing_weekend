@@ -7,19 +7,19 @@ data class ConstantMedium(val boundary: Hitable, val density: Double, val textur
     val phaseFunction = Isotropic(texture)
 
     override fun hit(ray: Ray, min_t: Double, max_t: Double): Hit? {
-        var global = boundary.hit(ray, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY) ?: return null
-        var local = boundary.hit(ray, global.t + 0.0001, max_t) ?: return null
-        global = global.copy(t = max(min_t, global.t))
+        var input = boundary.hit(ray, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY) ?: return null
+        var output = boundary.hit(ray, input.t + 0.0001, Double.POSITIVE_INFINITY) ?: return null
+        input = input.copy(t = max(min_t, input.t))
 
-        local = local.copy(t = min(max_t, local.t))
-        if (global.t >= local.t) {
+        output = output.copy(t = min(max_t, output.t))
+        if (input.t >= output.t) {
             return null
         }
-        global = global.copy(t = max(0.0, global.t))
-        val distanceInsideBoundary = (local.t - global.t) * ray.direction.length()
+        input = input.copy(t = max(0.0, input.t))
+        val distanceInsideBoundary = (output.t - input.t) * ray.direction.length()
         val hitDistance = (-1.0 / density) * log(Random.nextDouble(), 2.71)
         if (hitDistance < distanceInsideBoundary) {
-            val t = global.t + hitDistance / ray.direction.length()
+            val t = input.t + hitDistance / ray.direction.length()
             val point = ray.pointAtParameter(t)
             return Hit(t, point, Vec3(1.0, 0.0, 0.0), 0.0, 0.0, phaseFunction)
         }
