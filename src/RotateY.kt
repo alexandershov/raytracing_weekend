@@ -13,8 +13,8 @@ data class RotateY(val hitable: Hitable, val angle: Double) : Hitable {
     override fun boundingBox(t0: Double, t1: Double): Aabb? {
         val box = hitable.boundingBox(t0, t1) ?: return null
         val result = Aabb(
-            Vec3(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE),
-            Vec3(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
+            Vec3(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+            Vec3(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY)
         )
         for (i in 0..1) {
             for (j in 0..1) {

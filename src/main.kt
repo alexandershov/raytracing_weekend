@@ -136,7 +136,7 @@ fun main() {
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCornellCamera(nx, ny)
         val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
-        val antiAliasing = 1000
+        val antiAliasing = 100
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
                 var col = Vec3(0.0, 0.0, 0.0)
