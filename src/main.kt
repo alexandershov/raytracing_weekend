@@ -1,4 +1,5 @@
 import java.io.File
+import java.lang.RuntimeException
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -129,16 +130,37 @@ fun makeCamera(nx: Int, ny: Int): Camera {
     )
 }
 
-fun main() {
+fun main(args: Array<String>) {
+    if (args.isNotEmpty() && args.size != 3) {
+        throw RuntimeException("should pass 0 or 3 arguments, got ${args.size}")
+    }
+    val nx: Int
+    val ny: Int
+    val antiAliasing: Int
+    if (args.isEmpty()) {
+        nx = 200
+        ny = 100
+        antiAliasing = 100
+    } else {
+        nx = args[0].toInt()
+        ny = args[1].toInt()
+        antiAliasing = args[2].toInt()
+    }
+    println("nx = $nx, ny = $ny, antiAliasing = $antiAliasing")
     File("scene.ppm").printWriter().use { out ->
-        val nx = 400
-        val ny = 200
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCornellCamera(nx, ny)
         val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
-        val antiAliasing = 100
+        val shown = mutableSetOf<Int>()
+        var counter = 0
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
+                counter++
+                val percentage = ((counter.toDouble() / (nx * ny)) * 100).toInt()
+                if (percentage % 1 == 0 && !shown.contains(percentage)) {
+                    println("processed ${percentage}%")
+                    shown.add(percentage)
+                }
                 var col = Vec3(0.0, 0.0, 0.0)
                 for (n in 0 until antiAliasing) {
                     val u = (i + nextDouble()) / nx
