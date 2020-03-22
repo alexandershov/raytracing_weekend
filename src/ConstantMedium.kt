@@ -7,9 +7,8 @@ data class ConstantMedium(val boundary: Hitable, val density: Double, val textur
     val phaseFunction = Isotropic(texture)
 
     override fun hit(ray: Ray, min_t: Double, max_t: Double): Hit? {
-        var global = boundary.hit(ray, Double.MIN_VALUE, Double.MAX_VALUE) ?: return null
-        // TODO: do we need 0.0001
-        var local = boundary.hit(ray, min_t + 0.0001, max_t) ?: return null
+        var global = boundary.hit(ray, Double.NEGATIVE_INFINITY, Double.MAX_VALUE) ?: return null
+        var local = boundary.hit(ray, global.t + 0.0001, max_t) ?: return null
         global = global.copy(t = max(min_t, global.t))
 
         local = local.copy(t = min(max_t, local.t))

@@ -136,7 +136,7 @@ fun main() {
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCornellCamera(nx, ny)
         val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
-        val antiAliasing = 100
+        val antiAliasing = 1000
         for (j in ny - 1 downTo 0) {
             for (i in 0 until nx) {
                 var col = Vec3(0.0, 0.0, 0.0)
@@ -208,16 +208,24 @@ private fun makeCornellWorld(): List<Hitable> {
     val red = Lambertian(ConstantTexture(Vec3(0.65, 0.05, 0.05)))
     val white = Lambertian(ConstantTexture(Vec3(0.73, 0.73, 0.73)))
     val green = Lambertian(ConstantTexture(Vec3(0.12, 0.45, 0.15)))
-    val light = DiffuseLight(ConstantTexture(Vec3(15.0, 15.0, 15.0)))
+    val light = DiffuseLight(ConstantTexture(Vec3(7.0, 7.0, 7.0)))
     val greenWall = Rect(green, Vec3(555.0, 0.0, 0.0), Vec3(555.0, 555.0, 555.0), 0)
     val redWall = Rect(red, Vec3(0.0, 0.0, 0.0), Vec3(0.0, 555.0, 555.0), 0)
     val floor = Rect(white, Vec3(0.0, 0.0, 0.0), Vec3(555.0, 0.0, 555.0), 1)
     val ceiling = Rect(white, Vec3(0.0, 555.0, 0.0), Vec3(555.0, 555.0, 555.0), 1)
     val farWall = Rect(white, Vec3(0.0, 0.0, 555.0), Vec3(555.0, 555.0, 555.0), 2)
-    val lamp = Rect(light, Vec3(213.0, 554.0, 227.0), Vec3(343.0, 554.0, 332.0), 1)
-    val tallBox = Translate(RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 330.0, 165.0), white), 15.0 * Math.PI / 180), Vec3(265.0, 0.0, 295.0))
-    val wideBox = Translate(RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 165.0, 165.0), white), -18.0 * Math.PI/ 180), Vec3(130.0, 0.0, 65.0))
-    return listOf(lamp, greenWall, redWall, floor, ceiling, farWall, Translate(tallBox, Vec3(0.0, 100.0, 0.0)), wideBox)
+    val lamp = Rect(light, Vec3(113.0, 554.0, 127.0), Vec3(443.0, 554.0, 432.0), 1)
+    val tallBox = Translate(
+        RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 330.0, 165.0), white), 15.0 * Math.PI / 180),
+        Vec3(265.0, 0.0, 295.0)
+    )
+    val wideBox = Translate(
+        RotateY(Box(Vec3(0.0, 0.0, 0.0), Vec3(165.0, 165.0, 165.0), white), -18.0 * Math.PI / 180),
+        Vec3(130.0, 0.0, 65.0)
+    )
+    val smoke = ConstantMedium(wideBox, 0.01, ConstantTexture(Vec3(1.0, 1.0, 1.0)))
+    val fog = ConstantMedium(tallBox, 0.01, ConstantTexture(Vec3(0.0, 0.0, 0.0)))
+    return listOf(lamp, greenWall, redWall, floor, ceiling, farWall, fog, smoke)
 }
 
 
