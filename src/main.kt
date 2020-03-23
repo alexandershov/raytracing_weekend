@@ -150,7 +150,7 @@ fun main(args: Array<String>) {
     File("scene.ppm").printWriter().use { out ->
         out.print("P3\n$nx $ny\n255\n")
         val camera = makeCornellCamera(nx, ny)
-        val world = makeBVHNode(makeCornellWorld(), camera.startAt, camera.endAt)
+        val world = HitableList(makeFinalWorld())
         val shown = mutableSetOf<Int>()
         var counter = 0
         for (j in ny - 1 downTo 0) {
@@ -224,6 +224,50 @@ private fun makeCornellCamera(nx: Int, ny: Int): Camera {
         0.0,
         1.0
     )
+}
+
+private fun makeFinalWorld(): List<Hitable> {
+    val nb = 20
+    val list = mutableListOf<Hitable>()
+    val boxList = mutableListOf<Hitable>()
+    val boxList2 = mutableListOf<Hitable>()
+    val white = Lambertian(ConstantTexture(Vec3(0.73, 0.73, 0.73)))
+    val ground = Lambertian(ConstantTexture(Vec3(0.48, 0.83, 0.53)))
+    for (i in 0 until nb) {
+        for (j in 0 until nb) {
+            val w = 100.0
+            val x0 = -1000.0 + i * w
+            val z0 = -1000.0 + j * w
+            val y0 = 0.0
+            val x1 = x0 + w
+            val y1 = 100 * (nextDouble() + 0.01)
+            val z1 = z0 + w
+            boxList.add(Box(Vec3(x0, y0, z0), Vec3(x1, y1, z1), ground))
+        }
+    }
+    list.add(makeBVHNode(boxList, 0.0, 1.0))
+    val light = DiffuseLight(ConstantTexture(Vec3(7.0, 7.0, 7.0)))
+    val lamp = Rect(light, Vec3(123.0, 554.0, 147.0), Vec3(423.0, 554.0, 412.0), 1)
+    list.add(lamp)
+    val center = Vec3(400.0, 400.0, 200.0)
+    val movingSphere = MovingSphere(center, center + Vec3(30.0, 0.0, 0.0), 0.0, 1.0, 50.0, Lambertian(ConstantTexture(Vec3(0.7, 0.3, 0.1))))
+    list.add(movingSphere)
+    list.add(Sphere(Vec3(260.0, 150.0, 45.0), 50.0, Dielectric(1.5)))
+    list.add(Sphere(Vec3(0.0, 150.0, 145.0), 50.0, Metal(Vec3(0.8, 0.8, 0.9), 10.0)))
+    val boundary = Sphere(Vec3(360.0, 150.0, 145.0), 70.0, Dielectric(1.5))
+    list.add(boundary)
+    list.add(ConstantMedium(boundary, 0.2, ConstantTexture(Vec3(0.2, 0.4, 0.9))))
+    val largeBoundary = Sphere(Vec3(0.0, 0.0, 0.0), 5000.0, Dielectric(1.5))
+    list.add(ConstantMedium(largeBoundary, 0.0001, ConstantTexture(Vec3(1.0, 1.0, 1.0))))
+    val image = ImageTexture("/Users/aershov/Downloads/earthmap.jpg")
+    list.add(Sphere(Vec3(400.0, 200.0, 200.0), 100.0, Lambertian(image)))
+    val noise = NoiseTexture()  // what's with 0.1 in the book?
+    list.add(Sphere(Vec3(220.0, 280.0, 300.0), 80.0, Lambertian(noise)))
+    for (j in 0 until 1000) {
+        boxList2.add(Sphere(Vec3(165.0 * nextDouble(), 165.0 * nextDouble(), 165.0 * nextDouble()), 10.0, white))
+    }
+    list.add(Translate(RotateY(makeBVHNode(boxList2, 0.0, 1.0), 15.0 * Math.PI / 180.0), Vec3(-100.0, 270.0, 395.0)))
+    return list
 }
 
 private fun makeCornellWorld(): List<Hitable> {
