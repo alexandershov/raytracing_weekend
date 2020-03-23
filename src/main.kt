@@ -259,7 +259,7 @@ private fun makeFinalWorld(): List<Hitable> {
     list.add(ConstantMedium(boundary, 0.2, ConstantTexture(Vec3(0.2, 0.4, 0.9))))
     val largeBoundary = Sphere(Vec3(0.0, 0.0, 0.0), 5000.0, Dielectric(1.5))
     list.add(ConstantMedium(largeBoundary, 0.0001, ConstantTexture(Vec3(1.0, 1.0, 1.0))))
-    val image = ImageTexture("/Users/aershov/Downloads/earthmap.jpg")
+    val image = ImageTexture("earthmap.jpg")
     list.add(Sphere(Vec3(400.0, 200.0, 200.0), 100.0, Lambertian(image)))
     val noise = NoiseTexture()  // what's with 0.1 in the book?
     list.add(Sphere(Vec3(220.0, 280.0, 300.0), 80.0, Lambertian(noise)))
@@ -298,7 +298,6 @@ private fun makeCornellWorld(): List<Hitable> {
 private fun makePerlinWorld(): List<Hitable> {
     val texture = NoiseTexture()
     val light = DiffuseLight(ConstantTexture(Vec3(4.0, 4.0, 4.0)))
-    val image = ImageTexture("/Users/aershov/Downloads/earthmap.jpg")
     val large = Sphere(Vec3(0.0, -1000.0, 0.0), 1000.0, Lambertian(texture))
     val small = Sphere(Vec3(0.0, 2.0, 0.0), 2.0, Lambertian(texture))
     val smallLight = Sphere(Vec3(0.0, 10.0, 0.0), 1.0, light)
